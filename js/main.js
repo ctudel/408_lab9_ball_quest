@@ -18,14 +18,24 @@ function randomRGB() {
   return `rgb(${random(0, 255)},${random(0, 255)},${random(0, 255)})`;
 }
 
-class Ball {
-  constructor(x, y, velX, velY, color, size) {
+// TODO: Create new Shape class
+class Shape {
+  constructor(x, y, velX, velY) {
     this.x = x;
     this.y = y;
     this.velX = velX;
     this.velY = velY;
+  }
+}
+
+// TODO: Derive from Shape class
+class Ball extends Shape {
+  constructor(x, y, velX, velY, color, size, exists) {
+    super(x, y, velX, velY);
     this.color = color;
     this.size = size;
+    // TODO: Define new property to track if evil ball hasn't eaten it
+    this.exists = true;
   }
 
   draw() {
@@ -58,7 +68,8 @@ class Ball {
 
   collisionDetect() {
     for (const ball of balls) {
-      if (!(this === ball)) {
+      // TODO: Only consider for collision detect if ball exists
+      if (this.exists && !(this === ball)) {
         const dx = this.x - ball.x;
         const dy = this.y - ball.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -70,6 +81,7 @@ class Ball {
     }
   }
 }
+
 
 const balls = [];
 
