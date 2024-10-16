@@ -83,7 +83,7 @@ class Ball extends Shape {
 }
 
 // TODO: Create an EvilCircle class inheriting Shape
-export default class EvilCircle extends Shape {
+class EvilCircle extends Shape {
   constructor(x, y) {
     super(x, y, 20, 20);
     // TODO: set color to white and size to 10
@@ -114,8 +114,6 @@ export default class EvilCircle extends Shape {
     ctx.beginPath();
     ctx.lineWidth = 3;
     ctx.strokeStyle = this.color;
-    console.log("x:" + this.x);
-    console.log("y:" + this.y);
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.stroke();
   }
@@ -124,22 +122,18 @@ export default class EvilCircle extends Shape {
   checkBounds() {
     if (this.x + this.size >= width) {
       this.x -= this.velX;
-      console.log("passed");
     }
 
     if (this.x - this.size <= 0) {
       this.x += this.velX;
-      console.log("passed");
     }
 
     if (this.y + this.size >= height) {
       this.y -= this.velY;
-      console.log("passed");
     }
 
     if (this.y - this.size <= 0) {
       this.y += this.velY;
-      console.log("passed");
     }
   }
 
@@ -148,7 +142,6 @@ export default class EvilCircle extends Shape {
     for (const ball of balls) {
       // TODO: check ball exists
       if (ball.exists) {
-        console.log("ball exists");
         const dx = this.x - ball.x;
         const dy = this.y - ball.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -156,7 +149,6 @@ export default class EvilCircle extends Shape {
         // TODO: update ball exists property upon collision
         if (distance < this.size + ball.size) {
           ball.exists = false;
-          console.log(ball.exists);
         }
       }
     }
@@ -202,3 +194,4 @@ function loop() {
 }
 
 loop();
+
