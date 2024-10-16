@@ -1,3 +1,8 @@
+// ball counter
+
+const counter = document.querySelector("#counter");
+let count = 0;
+
 // set up canvas
 
 const canvas = document.querySelector("canvas");
@@ -34,15 +39,17 @@ class Ball extends Shape {
     super(x, y, velX, velY);
     this.color = color;
     this.size = size;
-    // TODO: Define new property to track if evil ball hasn't eaten it
     this.exists = true;
   }
 
   draw() {
-    ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    ctx.fill();
+    // Doesn't draw unless it still exists
+    if (this.exists) {
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+      ctx.fill();
+    }
   }
 
   update() {
@@ -68,7 +75,6 @@ class Ball extends Shape {
 
   collisionDetect() {
     for (const ball of balls) {
-      // TODO: Only consider for collision detect if ball exists
       if (this.exists && !(this === ball)) {
         const dx = this.x - ball.x;
         const dy = this.y - ball.y;
@@ -82,14 +88,13 @@ class Ball extends Shape {
   }
 }
 
-// TODO: Create an EvilCircle class inheriting Shape
 class EvilCircle extends Shape {
   constructor(x, y) {
     super(x, y, 20, 20);
-    // TODO: set color to white and size to 10
     this.color = "rgb(255, 255, 255)";
     this.size = 10;
 
+    // Listens for certain keys
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "a":
@@ -108,8 +113,6 @@ class EvilCircle extends Shape {
     });
   }
 
-
-  // TODO: Create draw method
   draw() {
     ctx.beginPath();
     ctx.lineWidth = 3;
@@ -118,7 +121,6 @@ class EvilCircle extends Shape {
     ctx.stroke();
   }
 
-  // TODO: Create checkBounds method
   checkBounds() {
     if (this.x + this.size >= width) {
       this.x -= this.velX;
@@ -137,7 +139,6 @@ class EvilCircle extends Shape {
     }
   }
 
-  // TODO: Create collisionDetect method
   collisionDetect() {
     for (const ball of balls) {
       // TODO: check ball exists
@@ -149,12 +150,13 @@ class EvilCircle extends Shape {
         // TODO: update ball exists property upon collision
         if (distance < this.size + ball.size) {
           ball.exists = false;
+          count--;
+          counter.innerHTML = `Ball count: ${count}`; 
         }
       }
     }
   }
 }
-
 
 const balls = [];
 const evilCircle = new EvilCircle(innerWidth / 2, innerHeight / 2);
@@ -175,6 +177,7 @@ while (balls.length < 25) {
   balls.push(ball);
 }
 
+
 function loop() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
   ctx.fillRect(0, 0, width, height);
@@ -189,9 +192,11 @@ function loop() {
   evilCircle.checkBounds();
   evilCircle.collisionDetect();
 
-
   requestAnimationFrame(loop);
 }
 
-loop();
+// Record and update initial ball count
+count = balls.length;
+counter.innerHTML = `Ball count: ${count}`; 
 
+loop();
