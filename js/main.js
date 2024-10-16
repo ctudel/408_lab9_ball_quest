@@ -82,8 +82,90 @@ class Ball extends Shape {
   }
 }
 
+// TODO: Create an EvilCircle class inheriting Shape
+export default class EvilCircle extends Shape {
+  constructor(x, y) {
+    super(x, y, 20, 20);
+    // TODO: set color to white and size to 10
+    this.color = "rgb(255, 255, 255)";
+    this.size = 10;
+
+    window.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "a":
+          this.x -= this.velX;
+          break;
+        case "d":
+          this.x += this.velX;
+          break;
+        case "w":
+          this.y -= this.velY;
+          break;
+        case "s":
+          this.y += this.velY;
+          break;
+      }
+    });
+  }
+
+
+  // TODO: Create draw method
+  draw() {
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = this.color;
+    console.log("x:" + this.x);
+    console.log("y:" + this.y);
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+
+  // TODO: Create checkBounds method
+  checkBounds() {
+    if (this.x + this.size >= width) {
+      this.x -= this.velX;
+      console.log("passed");
+    }
+
+    if (this.x - this.size <= 0) {
+      this.x += this.velX;
+      console.log("passed");
+    }
+
+    if (this.y + this.size >= height) {
+      this.y -= this.velY;
+      console.log("passed");
+    }
+
+    if (this.y - this.size <= 0) {
+      this.y += this.velY;
+      console.log("passed");
+    }
+  }
+
+  // TODO: Create collisionDetect method
+  collisionDetect() {
+    for (const ball of balls) {
+      // TODO: check ball exists
+      if (ball.exists) {
+        console.log("ball exists");
+        const dx = this.x - ball.x;
+        const dy = this.y - ball.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // TODO: update ball exists property upon collision
+        if (distance < this.size + ball.size) {
+          ball.exists = false;
+          console.log(ball.exists);
+        }
+      }
+    }
+  }
+}
+
 
 const balls = [];
+const evilCircle = new EvilCircle(innerWidth / 2, innerHeight / 2);
 
 while (balls.length < 25) {
   const size = random(10, 20);
@@ -110,6 +192,11 @@ function loop() {
     ball.update();
     ball.collisionDetect();
   }
+
+  evilCircle.draw();
+  evilCircle.checkBounds();
+  evilCircle.collisionDetect();
+
 
   requestAnimationFrame(loop);
 }
