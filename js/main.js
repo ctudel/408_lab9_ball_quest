@@ -205,8 +205,8 @@ function startNextRound() {
     // Update content for next round
   } else {
     balls = []; // reset ball list
-    numBalls = Math.ceil(numBalls * 1.5); // 
-    createBalls(numBalls); // increase balls
+    numBalls = Math.ceil(numBalls * 1.5); // make round slightly harder
+    createBalls(numBalls);
 
     // Update countdown and rounds
     countdown = 3;
