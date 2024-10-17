@@ -1,7 +1,9 @@
-// ball counter
+// ball counter and rounds
 
+const header = document.querySelector("h1");
+const rounds = document.querySelector("#rounds");
 const counter = document.querySelector("#counter");
-let count = 0;
+let count = 0; // num of current balls
 
 // set up canvas
 
@@ -151,33 +153,73 @@ class EvilCircle extends Shape {
         if (distance < this.size + ball.size) {
           ball.exists = false;
           count--;
-          counter.innerHTML = `Ball count: ${count}`; 
+          counter.innerHTML = `Ball count: ${count}`;
         }
       }
     }
   }
 }
 
-const balls = [];
-const evilCircle = new EvilCircle(innerWidth / 2, innerHeight / 2);
+const evilCircle = new EvilCircle(innerWidth / 2, innerHeight / 2); // evil player
+let numBalls = 2; // num balls on the canvas
+let balls = []; // balls on the canvas
+let animation; // animation status
+let round = 1; // game round
+let countdown = 3; // countdown after each round
 
-while (balls.length < 25) {
-  const size = random(10, 20);
-  const ball = new Ball(
-    // ball position always drawn at least one ball width
-    // away from the edge of the canvas, to avoid drawing errors
-    random(0 + size, width - size),
-    random(0 + size, height - size),
-    random(-7, 7),
-    random(-7, 7),
-    randomRGB(),
-    size
-  );
 
-  balls.push(ball);
+// Creates given number of balls
+function createBalls(numBalls) {
+  while (balls.length < numBalls) {
+    const size = random(10, 20);
+    const ball = new Ball(
+      // ball position always drawn at least one ball width
+      // away from the edge of the canvas, to avoid drawing errors
+      random(0 + size, width - size),
+      random(0 + size, height - size),
+      random(-7, 7),
+      random(-7, 7),
+      randomRGB(),
+      size
+    );
+
+    balls.push(ball);
+
+    // Record and update ball count
+    count = numBalls; // live ball count
+    counter.innerHTML = `Ball count: ${count}`;
+  }
+
+  return true;
 }
 
 
+// Next Round function
+function startNextRound() {
+  // Start countdown
+  if (countdown > 0) {
+    header.innerHTML = `Congratulations!! Prepare for the next round: ${countdown}`;
+    countdown--;
+    setTimeout(startNextRound, 1000);
+
+    // Update content for next round
+  } else {
+    balls = []; // reset ball list
+    numBalls = Math.ceil(numBalls * 1.5); // 
+    createBalls(numBalls); // increase balls
+
+    // Update countdown and rounds
+    countdown = 3;
+    header.innerHTML = "bouncing balls";
+    rounds.innerHTML = `Round: ${++round}` // update round
+
+    // Restart the animation
+    startAnimation();
+  }
+}
+
+
+// Animation function
 function loop() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
   ctx.fillRect(0, 0, width, height);
@@ -192,11 +234,33 @@ function loop() {
   evilCircle.checkBounds();
   evilCircle.collisionDetect();
 
-  requestAnimationFrame(loop);
+  // When all balls are eaten, go to the next round
+  if (count < 1) {
+    stopAnimation();
+    startNextRound();
+
+  } else {
+    animation = requestAnimationFrame(loop);
+  }
 }
 
-// Record and update initial ball count
-count = balls.length;
-counter.innerHTML = `Ball count: ${count}`; 
 
-loop();
+// Starts animation
+function startAnimation() {
+  animation = requestAnimationFrame(loop);
+}
+
+
+// Stops animation
+function stopAnimation() {
+  cancelAnimationFrame(animation);
+}
+
+
+
+// ===================
+// Program starts here
+// ===================
+
+createBalls(numBalls); // create initial balls
+startAnimation();

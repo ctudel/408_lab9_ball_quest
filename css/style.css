@@ -24,10 +24,16 @@ h1 {
   text-shadow: 0 0 4px white;
 }
 
-p {
+#counter,
+#rounds, 
+#timer {
   position: absolute;
   margin: 0;
   top: 35px;
   right: 5px;
   color: #aaa;
+}
+
+#rounds {
+  top: 65px;
 }
